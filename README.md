@@ -1,5 +1,8 @@
 # KioskExample
 
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/nerves-web-kiosk/kiosk_example/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/nerves-web-kiosk/kiosk_example/tree/main)
+[![REUSE status](https://api.reuse.software/badge/github.com/nerves-web-kiosk/kiosk_example)](https://api.reuse.software/info/github.com/nerves-web-kiosk/kiosk_example)
+
 This is the example kiosk application for followings,
 
 - [kiosk_nerves_rpi4](https://github.com/nerves-web-kiosk/kiosk_system_rpi4)

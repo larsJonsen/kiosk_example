@@ -1,3 +1,5 @@
+version: 2.1
+
 defaults: &defaults
   docker:
     - image: hexpm/elixir:1.17.3-erlang-27.1.2-ubuntu-jammy-20240808
@@ -111,8 +113,6 @@ build: &build
         paths:
           - ~/deploy
 
-version: 2.0
-
 jobs:
   build_host:
     <<: *defaults
@@ -129,6 +129,13 @@ jobs:
     environment:
       MIX_TARGET: rpi4
     <<: *build
+
+  check-license:
+    docker:
+      - image: fsfe/reuse:latest
+    steps:
+      - checkout
+      - run: reuse lint
 
   deploy:
     <<: *defaults
@@ -165,7 +172,6 @@ jobs:
           command: gh release edit $CIRCLE_TAG --repo $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME --draft=false
 
 workflows:
-  version: 2
   build_deploy:
     jobs:
       - build_host:
@@ -177,6 +183,10 @@ workflows:
             tags:
               only: /.*/
       - build_rpi4:
+          filters:
+            tags:
+              only: /.*/
+      - check-license:
           filters:
             tags:
               only: /.*/
