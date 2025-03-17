@@ -17,7 +17,7 @@ defmodule KioskExampleWeb.GPIOLive do
           phx-click="push"
           value={label}
         >
-          <%= label %>
+          {label}
         </button>
       <% end %>
     </div>
