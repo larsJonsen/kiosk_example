@@ -40,22 +40,13 @@ if keys == [],
 config :nerves_ssh,
   authorized_keys: Enum.map(keys, &File.read!/1)
 
-# Configure the network using vintage_net
+# Common VintageNet configuration
 #
-# Update regulatory_domain to your 2-letter country code E.g., "US"
-#
-# See https://github.com/nerves-networking/vintage_net for more information
+# regulatory_domain - 00 (global), change to "US", etc.
+# additional_name_servers - Set to try mdns_lite's DNS bridge first
 config :vintage_net,
   regulatory_domain: "00",
-  config: [
-    {"usb0", %{type: VintageNetDirect}},
-    {"eth0",
-     %{
-       type: VintageNetEthernet,
-       ipv4: %{method: :dhcp}
-     }},
-    {"wlan0", %{type: VintageNetWiFi}}
-  ]
+  additional_name_servers: [{127, 0, 0, 53}]
 
 config :mdns_lite,
   # The `hosts` key specifies what hostnames mdns_lite advertises.  `:hostname`
@@ -68,7 +59,11 @@ config :mdns_lite,
 
   hosts: [:hostname, "nerves"],
   ttl: 120,
-
+  dns_bridge_enabled: true,
+  dns_bridge_ip: {127, 0, 0, 53},
+  dns_bridge_port: 53,
+  dns_bridge_recursive: false,
+  ipv4_only: false,
   # Advertise the following services over mDNS.
   services: [
     %{
@@ -90,6 +85,5 @@ config :mdns_lite,
 
 # Import target specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
-# Uncomment to use target specific configurations
 
-# import_config "#{Mix.target()}.exs"
+import_config "#{Mix.target()}.exs"
