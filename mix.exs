@@ -17,7 +17,7 @@ defmodule KioskExample.MixProject do
       archives: [nerves_bootstrap: "~> 1.13"],
       start_permanent: Mix.env() == :prod,
       dialyzer: dialyzer(),
-      aliases: aliases(),
+      aliases: aliases(), 
       deps: deps(),
       docs: docs(),
       releases: [{@app, release()}],
@@ -72,7 +72,7 @@ defmodule KioskExample.MixProject do
       # version updates, please review their release notes in case
       # changes to your application are needed.
       {:kiosk_system_rpi4, "~> 0.4.0", runtime: false, targets: :rpi4},
-      {:kiosk_system_rpi5, "~> 0.4.0", runtime: false, targets: :rpi5}
+      #{:kiosk_system_rpi5, "~> 0.4.0", runtime: false, targets: :rpi5}
     ] ++ phoenix_deps()
   end
 
@@ -108,8 +108,9 @@ defmodule KioskExample.MixProject do
       {:phoenix, "~> 1.7.14"},
       {:phoenix_html, "~> 4.1"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
-      # TODO bump on release to {:phoenix_live_view, "~> 1.0.0"},
-      {:phoenix_live_view, "~> 1.0.0-rc.1", override: true},
+      {:phoenix_live_view, "~> 1.0"},
+      #{:phoenix_pubsub, "~> 2.0"},
+      #{:phoenix_live_view, "~> 1.0.0-rc.1", override: true},
       {:floki, ">= 0.30.0", only: :test},
       {:phoenix_live_dashboard, "~> 0.8.3"},
       {:esbuild, "~> 0.8", runtime: Mix.env() == :dev},
