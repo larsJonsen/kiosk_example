@@ -19,6 +19,10 @@ defmodule LoadSensorServer do
   def stop do
     GenServer.stop(__MODULE__)
   end
+
+  def tare do
+    GenServer.call(__MODULE__, :tare)
+  end
   
   # Server callbacks
    @impl true
@@ -26,7 +30,7 @@ defmodule LoadSensorServer do
     # Schedule first reading
     schedule_reading()
     {:ok, %__MODULE__{
-      pubsub: pubsub, 
+      pubsub: pubsub,   
       sensor: sensor, 
       offset: 0, 
       current_value: 0}}
@@ -38,7 +42,7 @@ defmodule LoadSensorServer do
     |> Task.async_stream(HX712Server, :read_load, [])
     |> Enum.reduce(state.offset, fn x, acc -> elem(x,1) + acc end)
     # Broadcast the new value
-    Phoenix.PubSub.broadcast(state.pubsub, "scale", {:load_updated, new_value})
+    Phoenix.PubSub.broadcast(state.pubsub, "scale", {:load_updated, round(new_value)})
     # Schedule next reading
     schedule_reading()
     {:noreply, %{state | current_value: new_value}}
@@ -49,9 +53,9 @@ defmodule LoadSensorServer do
     {:reply, state.current_value, state}
   end
 
-  def handle_call(:subscribe, _from, state) do
-    ans = Phoenix.PubSub.subscribe(state.pubsub, "scale")
-    {:reply, ans, state}
+  def handle_call(:tare, _from, state) do
+    new_offset = state.offset - state.current_value
+    {:reply, new_offset, %{state | offset: new_offset}}
   end
   
   defp schedule_reading do
