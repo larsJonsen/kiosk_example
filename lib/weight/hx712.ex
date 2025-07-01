@@ -85,7 +85,5 @@ defmodule Weight.HX712 do
     adxx = start()
     Enum.map(1..100, fn _x -> round(read_one(adxx)) end)
     stop(adxx)
-  end
-  
-  
+  end  
 end

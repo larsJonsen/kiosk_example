@@ -31,7 +31,11 @@ defmodule LoadSupervisor do
       %{
         id: Scale,
         start: {LoadSensorServer, :start_link, [[pubsub: :my_pubsub, sensor: [:sensor_1, :sensor_2]]]}
-      }
+      },
+      %{
+        id: Dosing,
+        start: {DosingServer, :start_link, [[open_pin: 3, close_pin: 4,  pubsub: :my_pubsub, name: :dose]]}
+      },
     ]
  
     else
@@ -45,7 +49,11 @@ defmodule LoadSupervisor do
       %{
         id: Scale,
         start: {LoadSensorServer, :start_link, [[pubsub: :my_pubsub, sensor: [:sensor_1]]]}
-      }
+      },
+      %{
+        id: Dosing,
+        start: {DosingServer, :start_link, [[open_pin: 3, close_pin: 4,  pubsub: :my_pubsub, name: :dose]]}
+      },
     ]
   end
     Supervisor.init(children, strategy: :rest_for_one)
