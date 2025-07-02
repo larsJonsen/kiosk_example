@@ -27,7 +27,6 @@ defmodule KioskExampleWeb.LoadSensorLive do
   end
 
   def handle_info({:dose, %{status: status, net_weight: net_weight}}, socket) do 
-    #IO.inspect(status, label: "Status")
     {:noreply, assign(socket, [status: status, net_weight: net_weight])}
   end
 
@@ -50,9 +49,14 @@ defmodule KioskExampleWeb.LoadSensorLive do
     {:noreply, assign(socket, :ctrl_down, true)}
   end
     
-  def handle_event("keydown", %{"key" => "t"}, socket) do
-    if socket.assigns.ctrl_down do  # Same logic as the tare button
-    LoadSensorServer.tare()
+  def handle_event("keydown", %{"key" => key}, socket) do
+    IO.inspect(key, label: "key")
+    if socket.assigns.ctrl_down do
+      case key do
+        "d" -> DosingServer.start_dosing(:dose, 3)
+        "s" -> DosingServer.stop_dosing(:dose)
+        _ -> nil
+      end
     end
     {:noreply, socket}
   end

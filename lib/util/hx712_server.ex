@@ -31,7 +31,7 @@ defmodule HX712Server do
   end
 
   def calibrate(name) do
-    GenServer.call(name, :calibrate, 60000)
+    GenServer.call(name, :calibrate, 100000)
   end
 
   @impl true
