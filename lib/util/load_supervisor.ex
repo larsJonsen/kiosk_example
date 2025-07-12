@@ -35,7 +35,7 @@ defmodule LoadSupervisor do
           },
           %{
             id: Dosing,
-            start: {DosingServer, :start_link, [[open_pin: 3, close_pin: 4,  pubsub: :my_pubsub, name: :dose]]}
+            start: {DosingServer, :start_link, [[open_pin: 20, close_pin: 21,  pubsub: :my_pubsub, name: :dose]]}
           },
         ]
       _ -> [
@@ -46,12 +46,17 @@ defmodule LoadSupervisor do
             scale: -102.2123125, offset: 8303686.6875, name: :sensor_1]]}
           },
           %{
+            id: LoadSensor,
+            start: {HX712Server, :start_link, [[addo_pin: 10, adsk_pin: 11, 
+            scale: -102.2123125, offset: 8303686.6875, name: :sensor_2]]}
+          },
+          %{
             id: Scale,
-            start: {LoadSensorServer, :start_link, [[pubsub: :my_pubsub, sensor: [:sensor_1]]]}
+            start: {LoadSensorServer, :start_link, [[pubsub: :my_pubsub, sensor: [:sensor_1, :sensor_2]]]}
           },
           %{
             id: Dosing,
-            start: {DosingServer, :start_link, [[open_pin: 3, close_pin: 4,  pubsub: :my_pubsub, name: :dose]]}
+            start: {DosingServer, :start_link, [[open_pin: 20, close_pin: 21,  pubsub: :my_pubsub, name: :dose]]}
           },
         ]
       end   

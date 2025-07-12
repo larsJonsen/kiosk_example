@@ -61,6 +61,12 @@ config :vintage_net,
              key_mgmt: :wpa_psk,
              ssid: "TP-Link_A626",
              psk: "50612987"
+           },
+          %{
+             key_mgmt: :wpa_psk,
+             ssid: "Gropro",
+             psk: "1234567890",
+             scan_ssid: 1
            }
          ]
        },

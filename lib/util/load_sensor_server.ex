@@ -2,7 +2,7 @@ defmodule LoadSensorServer do
   use GenServer
 
   @max_size 10
-  @tolerance 0.15
+  @tolerance 0.2
 
    defstruct [:pubsub, 
      :sensor, 
@@ -133,8 +133,6 @@ defmodule LoadSensorServer do
   def wait_for_broadcast do
     receive do
       {:load_updated, %{stable: true}} ->
-        :ok
-      {:load_updated, %{stable: false}} ->
         :ok
       _ ->
         wait_for_broadcast()

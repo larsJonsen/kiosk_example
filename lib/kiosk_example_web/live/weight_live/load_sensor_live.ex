@@ -19,7 +19,9 @@ defmodule KioskExampleWeb.LoadSensorLive do
           |>assign(:ss, 0.0)
           |>assign(:status, :start)
           |>assign(:net_weight, 0.0)
-          |>assign(:ctrl_down, false)}
+          |>assign(:ctrl_down, false)
+          |>assign(:form, to_form(%{"dose" => nil}))
+        }
   end
   
   def handle_info({:load_updated, %{value: new_value, stable: stable, ss: ss}}, socket) do
@@ -28,6 +30,10 @@ defmodule KioskExampleWeb.LoadSensorLive do
 
   def handle_info({:dose, %{status: status, net_weight: net_weight}}, socket) do 
     {:noreply, assign(socket, [status: status, net_weight: net_weight])}
+  end
+
+  def handle_info(:clear_flash, socket) do
+    {:noreply, clear_flash(socket)}
   end
 
   def handle_event("tare", _value, socket) do
@@ -73,8 +79,31 @@ defmodule KioskExampleWeb.LoadSensorLive do
       {:noreply, socket}
   end
 
+  def handle_event("validate", params, socket) do
+      IO.inspect(params, label: "validate")
+      {:noreply, socket}
+  end
+
+  def handle_event("start_dose", %{"dose" => dose}, socket) do
+      IO.inspect(dose, label: "start_dose")
+      with {dose_float,""} <- Float.parse(dose) do
+        DosingServer.start_dosing(:dose, dose_float)
+        {:noreply, socket}
+      else
+        _ -> 
+            Process.send_after(self(), :clear_flash, 5000)
+           {:noreply, put_flash(socket, :error, "Dosis skal være et tal :-)")}  
+      end   
+  end
+
   def my_round(x,n) do
-   x |> Decimal.from_float |> Decimal.round(n)
+    cond do
+      is_float(x) -> x |> Decimal.from_float |> Decimal.round(n)
+      is_integer(x) -> x |> Decimal.new |> Decimal.round(n)
+      is_binary(x) -> x |> Decimal.new |> Decimal.round(n)
+      true -> Decimal.round(x,n)
+    end
+   
   end
 
   #   <.button variant="default" color="danger"> {@ss}  <./button>
@@ -94,8 +123,19 @@ defmodule KioskExampleWeb.LoadSensorLive do
         <p style="font-size:15em; ">
         <%= round(@net_weight) %>
         </p>
-        <.my_button variant="default" color="success" phx-click="dose">  {@status}  </.my_button>
-        <.my_button variant="default" color="danger" phx-click="stop">  Stop  </.my_button>
+
+        <.simple_form
+        for={@form}
+        id="dose_form"
+        phx-change="validate"
+        phx-submit="start_dose"
+      >
+        <.input field={@form[:dose]} type="number" label="Dose" />
+        <:actions>
+        <.my_button variant="default" color="success" phx-disable-with="Starter dose...">  {@status}  </.my_button> 
+        </:actions>   
+      </.simple_form>
+      <.my_button variant="default" color="danger" phx-click="stop">  Stop  </.my_button>
       </div>
     </div>
     """

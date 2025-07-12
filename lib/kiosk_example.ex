@@ -9,7 +9,8 @@ defmodule KioskExample do
   """
   @spec home() :: :ok
   def home() do
-    change_url("http://localhost:4000/")
+    #change_url("http://localhost:4000/")
+    change_url("http://localhost/load_server")
   end
 
   @doc """

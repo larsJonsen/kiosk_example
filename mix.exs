@@ -132,6 +132,7 @@ defmodule KioskExample.MixProject do
       {:bandit, "~> 1.5"},
       {:mishka_chelekom, "~> 0.0.5", only: :dev},
       {:decimal, "~> 2.0"},
+       {:ecto, "~> 3.10"},
     ]
   end
 
