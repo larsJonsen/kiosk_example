@@ -12,20 +12,20 @@ defmodule KioskExampleWeb.LoadSensorLive do
     end
     
     # Get initial value
-    initial_value = LoadSensorServer.get_current_value()
+    initial_value = SensorServer.get_current_value()
     {:ok, socket
           |>assign(:load_value, initial_value)
           |>assign(:stable, false)
-          |>assign(:ss, 0.0)
           |>assign(:status, :start)
+          |>assign(:dif, 0.0)
           |>assign(:net_weight, 0.0)
           |>assign(:ctrl_down, false)
           |>assign(:form, to_form(%{"dose" => nil}))
         }
   end
   
-  def handle_info({:load_updated, %{value: new_value, stable: stable, ss: ss}}, socket) do
-    {:noreply, assign(socket, [load_value: new_value, stable: stable, ss: ss])}
+  def handle_info({:scale_updated, %{value: new_value, stable: stable, dif: dif}}, socket) do
+    {:noreply, assign(socket, [load_value: new_value, stable: stable, dif: dif])}
   end
 
   def handle_info({:dose, %{status: status, net_weight: net_weight}}, socket) do 
@@ -36,10 +36,10 @@ defmodule KioskExampleWeb.LoadSensorLive do
     {:noreply, clear_flash(socket)}
   end
 
-  def handle_event("tare", _value, socket) do
-    LoadSensorServer.tare()
-    {:noreply, socket}
-  end
+#  def handle_event("tare", _value, socket) do
+#    LoadSensorServer.tare()
+#    {:noreply, socket}
+#  end
 
   def handle_event("dose", _value, socket) do
     DosingServer.start_dosing(:dose, 3)
@@ -118,8 +118,8 @@ defmodule KioskExampleWeb.LoadSensorLive do
         <%= round(@load_value) %>
         </p>
         <.my_button variant="default" color="secondary" phx-click="tare">  Tare (Ctrl+T)  </.my_button>
-       <.my_button :if={not @stable} variant="default" color="danger" >   {@ss}   </.my_button>
-       <.my_button :if={@stable} variant="default" color="success" >   {@ss}  </.my_button>
+       <.my_button :if={not @stable} variant="default" color="danger" >   {@dif}   </.my_button>
+       <.my_button :if={@stable} variant="default" color="success" >   {@dif}  </.my_button>
         <p style="font-size:15em; ">
         <%= round(@net_weight) %>
         </p>

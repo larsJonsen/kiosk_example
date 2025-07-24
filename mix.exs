@@ -104,7 +104,8 @@ defmodule KioskExample.MixProject do
   end
 
   defp phoenix_deps() do
-    [
+    
+    deps = [
       {:phoenix, "~> 1.7.14"},
       {:phoenix_html, "~> 4.1"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
@@ -130,10 +131,16 @@ defmodule KioskExample.MixProject do
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.1.1"},
       {:bandit, "~> 1.5"},
-      {:mishka_chelekom, "~> 0.0.5", only: :dev},
+      
       {:decimal, "~> 2.0"},
        {:ecto, "~> 3.10"},
     ]
+
+    if Mix.target() == :host do
+      deps ++ [{:mishka_chelekom, "~> 0.0.5", only: :dev}]
+    else
+      deps
+    end   
   end
 
   defp phoenix_aliases() do

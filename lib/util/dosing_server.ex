@@ -76,6 +76,7 @@ defmodule DosingServer do
 
   @impl true
   def handle_call({:start_dosing, desired_amount}, _from, %{status: :idle} = state) do
+    IO.inspect("Starting dosing process")
     Logger.info("Starting dosing process for #{desired_amount} units")
     start_tare(self())
     Logger.info("start_tare(self())")
@@ -106,6 +107,7 @@ defmodule DosingServer do
   end
 
   def handle_call(:get_status, _from, state) do
+    IO.inspect("handle_call(:get_status ....")
     status_info = %{
       status: state.status,
       desired_amount: state.desired_amount,
@@ -116,7 +118,7 @@ defmodule DosingServer do
   end
 
   @impl true
-  def handle_info({:load_updated,  %{value: new_value}}, state) do
+  def handle_info({:scale_updated,  %{value: new_value}}, state) do
     Phoenix.PubSub.broadcast(state.pubsub, "dose", 
       {state.name, %{status: state.status, 
           net_weight: state.current_weight - state.tare_weight}})
@@ -156,7 +158,7 @@ defmodule DosingServer do
   end
 
   def handle_cast(:tare, state) do
-    with {:ok, _text} <- LoadSensorServer.tare(),          
+    with {:ok, _text} <- SensorServer.tare(),          
       {:ok,tare_weight} <- wait_for_tare() do
         open_dosing_valve(%{open_pin: state.open_pin, close_pin: state.close_pin})
         {:noreply,  %__MODULE__{state | 

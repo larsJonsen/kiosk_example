@@ -2,7 +2,7 @@ defmodule HX712Proxy do
   use GenServer
   require Logger
 
-  defstruct [:addo, :adsk, :scale, :offset]
+  defstruct [:addo, :adsk, :scale, :offset, :name]
   
   def start_link([addo_pin: _addo_pin, adsk_pin: _adsk_pin, 
     scale: _scale, offset: _offset, name: name] = opts) do
@@ -36,14 +36,33 @@ defmodule HX712Proxy do
 
   @impl true
   def init([addo_pin: addo_pin, adsk_pin: adsk_pin, 
-    scale: scale, offset: offset, name: _name]) do
+    scale: scale, offset: offset, name: name]) do
+    schedule_reading()
       {:ok, %__MODULE__{
         addo: addo_pin, 
         adsk: adsk_pin,
         scale: scale, 
         offset: offset,
+        name: name, 
       }}
   end
+
+  @impl true
+  def handle_info(:read_sensor, state) do
+    data = hx712_read_one(state)
+        # Broadcast the new value
+    Phoenix.PubSub.broadcast(:my_pubsub, "sensor", 
+      {:sensor_update, Map.put_new(%{}, state.name, data)})
+    # Schedule next reading
+    schedule_reading()
+    {:noreply, state}
+  end
+
+  defp schedule_reading do
+    # Adjust interval as needed (100ms = 0.1 seconds)
+    Process.send_after(self(), :read_sensor, 100)
+  end
+
 
 
   @impl true

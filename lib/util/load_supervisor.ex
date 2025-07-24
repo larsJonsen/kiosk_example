@@ -31,7 +31,7 @@ defmodule LoadSupervisor do
           },
           %{
             id: Scale,
-            start: {LoadSensorServer, :start_link, [[pubsub: :my_pubsub, sensor: [:sensor_1, :sensor_2]]]}
+            start: {SensorServer, :start_link, [%{pubsub: :my_pubsub, sensor: [:sensor_1, :sensor_2]}]}
           },
           %{
             id: Dosing,
@@ -41,18 +41,20 @@ defmodule LoadSupervisor do
       _ -> [
         {Phoenix.PubSub,  name: :my_pubsub},
          %{
-            id: LoadSensor,
-            start: {HX712Server, :start_link, [[addo_pin: 17, adsk_pin: 22, 
-            scale: -102.2123125, offset: 8303686.6875, name: :sensor_1]]}
+            id: LoadSensor_1,
+            start: {HX712Server, :start_link, [%{addo_pin: 17, adsk_pin: 22, 
+              scale: 211.21431995738635, offset: 8264455.25, 
+              name: :sensor_1, pubsub: :my_pubsub}]}
           },
           %{
-            id: LoadSensor,
-            start: {HX712Server, :start_link, [[addo_pin: 10, adsk_pin: 11, 
-            scale: -102.2123125, offset: 8303686.6875, name: :sensor_2]]}
+            id: LoadSensor_2,
+            start: {HX712Server, :start_link, [%{addo_pin: 10, adsk_pin: 11, 
+              scale: 213.82009055397728, offset: 8342070.25, 
+              name: :sensor_2, pubsub: :my_pubsub}]}
           },
           %{
             id: Scale,
-            start: {LoadSensorServer, :start_link, [[pubsub: :my_pubsub, sensor: [:sensor_1, :sensor_2]]]}
+            start: {SensorServer, :start_link, [%{pubsub: :my_pubsub, sensor: [:sensor_1, :sensor_2]}]}
           },
           %{
             id: Dosing,

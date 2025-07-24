@@ -3,9 +3,10 @@ defmodule HX712Server do
   require Logger
   import Bitwise
 
-  defstruct [:addo, :adsk, :scale, :offset, :name, :pubsub]
+  defstruct [:addo, :adsk, :scale, :offset]
   
-  def start_link(%{name: name} = opts) do
+  def start_link([addo_pin: _addo_pin, adsk_pin: _adsk_pin, 
+    scale: _scale, offset: _offset, name: name] = opts) do
     GenServer.start_link(__MODULE__, opts, name: name)
   end
 
@@ -34,22 +35,20 @@ defmodule HX712Server do
   end
 
   @impl true
-  def init(%{addo_pin: addo_pin, adsk_pin: adsk_pin, 
-    scale: scale, offset: offset, name: name, pubsub: pubsub}) do
-    schedule_reading()
+  def init([addo_pin: addo_pin, adsk_pin: adsk_pin, 
+    scale: scale, offset: offset, name: _name]) do
     with %{addo: addo, adsk: adsk} <- hx712_start(%{addo_pin: addo_pin, adsk_pin: adsk_pin}) do
       {:ok, %__MODULE__{
         addo: addo, 
         adsk: adsk,
         scale: scale, 
         offset: offset,
-        name: name, 
-        pubsub: pubsub,
       }}
     else
       _ -> {:error, nil}
     end
   end
+
 
   @impl true
   def handle_call(:read_load, _from, state) do
@@ -81,17 +80,6 @@ defmodule HX712Server do
     item_weight = getNum("")
     scale = measured_weight / item_weight
     {:reply, %{offset: offset, scale: scale}, %{state | offset: offset, scale: scale}}
-  end
-
-  @impl true
-  def handle_info(:read_sensor, state) do
-    data = hx712_read_one(state)
-        # Broadcast the new value
-    Phoenix.PubSub.broadcast(state.pubsub, "sensor", 
-      {:sensor_update, Map.put_new(%{}, state.name, data)})
-    # Schedule next reading
-    schedule_reading()
-    {:noreply, state}
   end
 
 
@@ -127,11 +115,6 @@ defmodule HX712Server do
         :ok 
     end 
   end 
-
-  defp schedule_reading do
-    # Adjust interval as needed (100ms = 0.1 seconds)
-    Process.send_after(self(), :read_sensor, 100)
-  end
 
   defp read_bits(0, acc, _), do: {acc, 0, 0} 
    
