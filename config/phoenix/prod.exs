@@ -20,13 +20,12 @@ import Config
 # # Runtime production configuration, including reading
 # # of environment variables, is done on config/runtime.exs.
 
-
 ################ clauds version ######
 
 import Config
 
 # Configure the endpoint for production
-  
+
 config :kiosk_example, KioskExampleWeb.Endpoint,
   # Always start the server in production (for Nerves kiosk)
   server: true,
@@ -43,7 +42,7 @@ config :kiosk_example, KioskExampleWeb.Endpoint,
 config :kiosk_example, dev_routes: false
 
 # Configure logging for embedded device
-config :logger, :console, 
+config :logger, :console,
   format: "[$level] $message\n",
   level: :info
 
@@ -57,5 +56,3 @@ config :swoosh, :api_client, false
 config :kiosk_example, KioskExampleWeb.Endpoint,
   debug_heex_annotations: false,
   enable_expensive_runtime_checks: false
-
-

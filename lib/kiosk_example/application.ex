@@ -8,10 +8,11 @@ defmodule KioskExample.Application do
   @impl Application
   def start(_type, _args) do
     children =
-      [%{
-      id: LoadSensor,
-      start: {KioskExample.LoadSensorServer, :start_link, []}
-    },
+      [
+        %{
+          id: LoadSensor,
+          start: {KioskExample.LoadSensorServer, :start_link, []}
+        }
         # Children for all targets
         # Starts a worker by calling: KioskExample.Worker.start_link(arg)
         # {KioskExample.Worker, arg},

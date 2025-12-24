@@ -17,10 +17,15 @@ defmodule KioskExample.MixProject do
       archives: [nerves_bootstrap: "~> 1.13"],
       start_permanent: Mix.env() == :prod,
       dialyzer: dialyzer(),
-      aliases: aliases(), 
+      aliases: aliases(),
       deps: deps(),
       docs: docs(),
-      releases: [{@app, release()}],
+      releases: [{@app, release()}]
+    ]
+  end
+
+  def cli do
+    [
       preferred_cli_env: %{docs: :docs},
       preferred_cli_target: %{run: :host, test: :host}
     ]
@@ -51,7 +56,7 @@ defmodule KioskExample.MixProject do
       {:dialyxir, "~> 1.2", only: :dev, runtime: false},
 
       # Dependencies for all targets
-      {:nerves, "~> 1.10", runtime: false},
+      {:nerves, "~> 1.12", runtime: false},
       {:shoehorn, "~> 0.9.1"},
       {:ring_logger, "~> 0.11.0"},
       {:toolshed, "~> 0.4.0"},
@@ -71,8 +76,8 @@ defmodule KioskExample.MixProject do
       # bumps to Nerves systems. Since these include Linux kernel and Erlang
       # version updates, please review their release notes in case
       # changes to your application are needed.
-      {:kiosk_system_rpi4, "~> 0.4.0", runtime: false, targets: :rpi4},
-      #{:kiosk_system_rpi5, "~> 0.4.0", runtime: false, targets: :rpi5}
+      {:kiosk_system_rpi4, "~> 0.4.0", runtime: false, targets: :rpi4}
+      # {:kiosk_system_rpi5, "~> 0.4.0", runtime: false, targets: :rpi5}
     ] ++ phoenix_deps()
   end
 
@@ -104,14 +109,13 @@ defmodule KioskExample.MixProject do
   end
 
   defp phoenix_deps() do
-    
     deps = [
       {:phoenix, "~> 1.7.14"},
       {:phoenix_html, "~> 4.1"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
       {:phoenix_live_view, "~> 1.0"},
-      #{:phoenix_pubsub, "~> 2.0"},
-      #{:phoenix_live_view, "~> 1.0.0-rc.1", override: true},
+      # {:phoenix_pubsub, "~> 2.0"},
+      # {:phoenix_live_view, "~> 1.0.0-rc.1", override: true},
       {:floki, ">= 0.30.0", only: :test},
       {:phoenix_live_dashboard, "~> 0.8.3"},
       {:esbuild, "~> 0.8", runtime: Mix.env() == :dev},
@@ -131,16 +135,15 @@ defmodule KioskExample.MixProject do
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.1.1"},
       {:bandit, "~> 1.5"},
-      
       {:decimal, "~> 2.0"},
-       {:ecto, "~> 3.10"},
+      {:ecto, "~> 3.10"}
     ]
 
     if Mix.target() == :host do
       deps ++ [{:mishka_chelekom, "~> 0.0.5", only: :dev}]
     else
       deps
-    end   
+    end
   end
 
   defp phoenix_aliases() do

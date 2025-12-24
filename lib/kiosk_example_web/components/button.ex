@@ -686,6 +686,7 @@ defmodule KioskExampleWeb.Components.Button do
 
   defp button_indicator(assigns) do
     ~H"""
+
     """
   end
 

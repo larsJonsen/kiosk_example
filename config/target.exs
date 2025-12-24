@@ -45,7 +45,7 @@ config :nerves_ssh,
 # regulatory_domain - 00 (global), change to "US", etc.
 # additional_name_servers - Set to try mdns_lite's DNS bridge first
 config :vintage_net,
-    config: [
+  config: [
     {"usb0", %{type: VintageNetDirect}},
     {"eth0",
      %{
@@ -62,7 +62,7 @@ config :vintage_net,
              ssid: "TP-Link_A626",
              psk: "50612987"
            },
-          %{
+           %{
              key_mgmt: :wpa_psk,
              ssid: "Gropro",
              psk: "1234567890",
@@ -73,7 +73,7 @@ config :vintage_net,
        ipv4: %{method: :dhcp}
      }}
   ]
-  
+
 config :mdns_lite,
   # The `hosts` key specifies what hostnames mdns_lite advertises.  `:hostname`
   # advertises the device's hostname.local. For the official Nerves systems, this

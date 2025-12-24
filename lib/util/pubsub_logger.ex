@@ -3,14 +3,14 @@ defmodule PubSubLogger do
 
   @doc """
   Subscribes to a PubSub topic and logs all messages to the console.
-  
+
   ## Parameters
   - pubsub: The PubSub process name (e.g., MyApp.PubSub)
   - topic: The topic string to subscribe to
   - opts: Optional keyword list with:
     - :prefix - String to prefix log messages with (default: "PubSub")
     - :level - Logger level to use (default: :info)
-  
+
   ## Examples
       iex> PubSubLogger.subscribe_and_log(MyApp.PubSub, "user_events")
       iex> PubSubLogger.subscribe_and_log(MyApp.PubSub, "notifications", prefix: "NOTIF", level: :debug)
@@ -18,15 +18,16 @@ defmodule PubSubLogger do
   def subscribe_and_log(pubsub, topic, opts \\ []) do
     prefix = Keyword.get(opts, :prefix, "PubSub")
     level = Keyword.get(opts, :level, :info)
-    
+
     # Spawn a process that will subscribe and listen
-    pid = spawn(fn -> 
-      # Subscribe to the topic in the spawned process
-      Phoenix.PubSub.subscribe(pubsub, topic)
-      Logger.log(level, "#{prefix}: Subscribed to topic '#{topic}' (PID: #{inspect(self())})")
-      message_loop(topic, prefix, level)
-    end)
-    
+    pid =
+      spawn(fn ->
+        # Subscribe to the topic in the spawned process
+        Phoenix.PubSub.subscribe(pubsub, topic)
+        Logger.log(level, "#{prefix}: Subscribed to topic '#{topic}' (PID: #{inspect(self())})")
+        message_loop(topic, prefix, level)
+      end)
+
     {:ok, pid}
   end
 
@@ -40,10 +41,10 @@ defmodule PubSubLogger do
 
   @doc """
   Stops a PubSub logger process.
-  
+
   ## Parameters
   - pid: The process ID returned from subscribe_and_log/3
-  
+
   ## Examples
       iex> {:ok, pid} = PubSubLogger.subscribe_and_log(MyApp.PubSub, "user_events")
       iex> PubSubLogger.stop(pid)
@@ -61,7 +62,7 @@ defmodule PubSubLogger do
 end
 
 # Convenience function for quick usage in IEx
-#defmodule IEx.Helpers do
+# defmodule IEx.Helpers do
 #  def listen_to(pubsub, topic, opts \\ []) do
 #    PubSubLogger.subscribe_and_log(pubsub, topic, opts)
 #  end
@@ -69,4 +70,4 @@ end
 #  def stop_listener(pid) do
 #    PubSubLogger.stop(pid)
 #  end
-#end
+# end
