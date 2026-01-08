@@ -20,6 +20,7 @@ defmodule KioskExampleWeb.Router do
     get "/", PageController, :home
     live "/gpio", GPIOLive
     live "/load_sensor", LoadSensorLive
+    live "/dose", DoseLive
   end
 
   # Other scopes may use custom stacks.

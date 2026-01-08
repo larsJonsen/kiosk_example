@@ -9,14 +9,23 @@ defmodule KioskExample.Application do
   def start(_type, _args) do
     children =
       [
-        %{
-          id: LoadSensor,
-          start: {KioskExample.LoadSensorServer, :start_link, []}
-        }
+       # %{
+       #   id: StateSupervisor,
+       #   start: {StateSupervisor, :start_link, []}
+       # }
+        #%{
+        #  id: LoadSensor,
+        #  start: {KioskExample.LoadSensorServer, :start_link, []}
+        #}
         # Children for all targets
         # Starts a worker by calling: KioskExample.Worker.start_link(arg)
         # {KioskExample.Worker, arg},
-      ] ++ phoenix_children() ++ children()
+      ] ++ phoenix_children() ++ 
+      [
+        %{
+          id: StateSupervisor,
+          start: {StateSupervisor, :start_link, []}
+        }] ++ children()
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options

@@ -63,6 +63,8 @@ defmodule KioskExample.MixProject do
       {:muontrap, "~> 1.0"},
       {:mix_tasks_upload_hotswap, "~> 0.1.0"},
       {:circuits_gpio, "~> 2.1"},
+      # ny deps:
+      {:gen_state_machine, "~> 3.0"},
 
       # Allow Nerves.Runtime on host to support development, testing and CI.
       # See config/host.exs for usage.
@@ -76,7 +78,7 @@ defmodule KioskExample.MixProject do
       # bumps to Nerves systems. Since these include Linux kernel and Erlang
       # version updates, please review their release notes in case
       # changes to your application are needed.
-      {:kiosk_system_rpi4, "~> 0.4.0", runtime: false, targets: :rpi4}
+      {:kiosk_system_rpi4, "~> 0.5.0", runtime: false, targets: :rpi4}
       # {:kiosk_system_rpi5, "~> 0.4.0", runtime: false, targets: :rpi5}
     ] ++ phoenix_deps()
   end

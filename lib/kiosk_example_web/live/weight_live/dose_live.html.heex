@@ -1,0 +1,31 @@
+<div class="load-sensor-display" phx-window-keydown="keydown" phx-window-keyup="keyup">
+  <h2>Load Sensor Reading</h2>
+
+  <div class="sensor-value">
+  <p style="font-size:5em; ">
+     State: {@state}
+  </p>
+    
+  <.my_button :if={:off == @state} variant="default" color="secondary" phx-click="test">Test (Ctrl+T)</.my_button>
+  <.my_button :if={:off == @state} variant="default" color="secondary" phx-click="calibrate">Calibrate</.my_button>
+  <.my_button :if={:ready == @state} variant="default" color="secondary" phx-click="off"> Off (Ctrl+O)</.my_button>
+  <.my_button :if={:ready == @state} variant="default" color="secondary" phx-click="dose"> Dose (Ctrl+D)</.my_button>
+  <.my_button :if={:dosing == @state} variant="default" color="secondary" phx-click="stop_dosing"> Stop dosingserver (Ctrl+D)</.my_button>
+    
+    Valve: {@valve}
+
+    <p :if={:dosing == @state} style="font-size:5em; ">
+      Dosing: {@dose}
+    <.simple_form for={@form} id="dose_form" phx-change="validate" phx-submit="start_dose">
+      <.input field={@form[:dose]} type="number" label="Dose" />
+      <:actions>
+        <.my_button variant="default" color="success" phx-disable-with="Starter dose...">
+        Start dosing
+        </.my_button>
+      </:actions>
+    </.simple_form>
+    <.my_button variant="default" color="secondary" phx-click="start">Start</.my_button>
+    <.my_button variant="default" color="danger" phx-click="stop">Stop</.my_button>
+    </p>
+  </div>
+</div>

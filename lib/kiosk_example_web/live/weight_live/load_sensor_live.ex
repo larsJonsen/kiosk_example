@@ -130,7 +130,6 @@ defmodule KioskExampleWeb.LoadSensorLive do
           <.input field={@form[:dose]} type="number" label="Dose" />
           <:actions>
             <.my_button variant="default" color="success" phx-disable-with="Starter dose...">
-              {@status}
             </.my_button>
           </:actions>
         </.simple_form>
